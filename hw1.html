@@ -21,7 +21,8 @@
 
 <script id='fs_script' type='x-shader/x-fragment'>
  
-varying vec3 vPos;                               // Pixel position
+varying vec3 vPos; 
+
 vec2 A[2];
 vec2 N;
 vec4 S;
@@ -48,7 +49,10 @@ void main() {
 
    for (int i = 0 ; i < 2 ; i++) {
       float z = D(3. * p + A[i]);
+      //t he 3 changes the radius of the circle
+      // 
       if (z > 0.)
+         // shading is based on the z
          c = vec3(0.8, 0.3, z);
    }
 
