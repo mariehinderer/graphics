@@ -41,16 +41,16 @@ function gl_start(canvas, vertexShader, update) {           // START WEBGL RUNNI
 
       canvas.setShaders = function(vertexShader, fragmentShader) {            // Add the vertex and fragment shaders:
          var gl = this.gl, program = gl.createProgram();                           // Create the WebGL program.
-    gl.program = program;
+	 gl.program = program;
          var shaderError = '';
-    errorLineNumber = -1;
+	 errorLineNumber = -1;
 
          function addshader(type, src) {                                           // Create and attach a WebGL shader.
             var shader = gl.createShader(type);
             gl.shaderSource(shader, src);
             gl.compileShader(shader);
             if (! gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-          shaderError = gl.getShaderInfoLog(shader);
+	       shaderError = gl.getShaderInfoLog(shader);
                console.log('Cannot compile shader:\n\n' + shaderError);
             }
             gl.attachShader(program, shader);
@@ -75,20 +75,20 @@ function gl_start(canvas, vertexShader, update) {           // START WEBGL RUNNI
             gl.vertexAttribPointer(aPos, 3, gl.FLOAT, false, 0, 0);
          }
 
-    textArea.style.color = shaderError.length == 0 ? 'white' : '#ffffa0';
-    if (shaderError.length == 0)
-       errorMessage.innerHTML = '';
+	 textArea.style.color = shaderError.length == 0 ? 'white' : '#ffffa0';
+	 if (shaderError.length == 0)
+	    errorMessage.innerHTML = '';
          else {
-       var message = shaderError.substring(9, shaderError.length);
-       errorLineNumber = parseInt(message) - 2;
-       message = message.substring(message.indexOf(' '), message.length);
-       var nE = message.indexOf('ERROR');
-       if (nE > 0)
-          message = message.substring(0, nE);
-       errorMessage.innerHTML = '<font face=courier>'
-                              + message.substring(0, Math.min(60, message.length))
-               + '</font>';
-    }
+	    var message = shaderError.substring(9, shaderError.length);
+	    errorLineNumber = parseInt(message) - 2;
+	    message = message.substring(message.indexOf(' '), message.length);
+	    var nE = message.indexOf('ERROR');
+	    if (nE > 0)
+	       message = message.substring(0, nE);
+	    errorMessage.innerHTML = '<font face=courier>'
+	                           + message.substring(0, Math.min(60, message.length))
+				   + '</font>';
+	 }
          highlight.setHighlight(highlightPattern);
       }
 
@@ -99,17 +99,17 @@ function gl_start(canvas, vertexShader, update) {           // START WEBGL RUNNI
          var gl = canvas.gl;
          gl.uniform1f(address('uTime'), time);                                // Set time for the shaders.
 
-    update();
+	 update();
 
          for (var name in uniformData) {
-       let u = uniformData[name];
-       switch (u.type) {
-       case 'float': gl.uniform1fv(address(name), u.data); break;
-       case 'vec2' : gl.uniform2fv(address(name), u.data); break;
-       case 'vec3' : gl.uniform3fv(address(name), u.data); break;
-       case 'vec4' : gl.uniform4fv(address(name), u.data); break;
-       }
-    }
+	    let u = uniformData[name];
+	    switch (u.type) {
+	    case 'float': gl.uniform1fv(address(name), u.data); break;
+	    case 'vec2' : gl.uniform2fv(address(name), u.data); break;
+	    case 'vec3' : gl.uniform3fv(address(name), u.data); break;
+	    case 'vec4' : gl.uniform4fv(address(name), u.data); break;
+	    }
+	 }
 
          gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);                                   // Render the square.
       }, 30);
@@ -138,25 +138,132 @@ function setIndex(i) {
 }  
 
 function accentColor(isTrue) { return isTrue ? '#aaddff' : '#006080'; }
-function addTextEditor(code, callback) {                                // Add a text editor to the web page:
+
+function addTextEditor(fss, callback) {                      // Add a text editor to the web page:
+   highlightPattern = fss[0];
+   var code         = fss[1];
+   var narrative    = fss[2];
+
+   function createIndexButtons() {
+      var str = '';
+      for (var i = 0 ; i < fss.length ; i += 3)
+         str += '<button id=indexButton' + i + ' onclick="setIndex(' + i + ')" '
+	        + 'style="color:black;background:' + accentColor(i==0) + ';border-style:none;outline-width:0">'
+		+ '<b>' + String.fromCharCode(65 + Math.floor(i / 3)) + '</b>'
+		+ '</button> &nbsp;'
+      return str;
+   }
+
    document.body.innerHTML = [''
-      ,'<table><tr><td width=10></td><td valign=top>'                         // Insert new html for textArea into the page.
-      ,'<textArea id=textArea '
-      ,'style="font:13px courier;outline-width:0;border-style:none;resize:none;overflow:scroll;"'
-      ,'></textArea>'
-      ,'</td><td valign=top>' + document.body.innerHTML + '</td></tr></table>'
-      ].join('');
 
-   textArea.value = code;                                                    // Set its current text to user-provided code.
+      ,'<CENTER>'
+      ,'<TABLE cellspacing=0 cellpadding=0 >'
+      ,'<TR>'
 
-   var i = 0, text = textArea.value.split('\n');                             // Set the correct number of rows and columns.
-   textArea.rows = Math.max(text.length, 50);
-   while (i < text.length)
-      textArea.cols = Math.max(textArea.cols, text[i++].length);
+      ,'<TD valign=top>'
 
-   textArea.style.backgroundColor = 'black';                                 // Set the text editor's text and bg colors.
-   textArea.style.color = 'white';
+      ,    '<TABLE cellspacing=0 cellpadding=0>'
 
+      ,    '<TR>'
+      ,    '<TD>'
+      ,    '</TD>'
+      ,    '<TD>'
+      ,        createIndexButtons()
+      ,    '</TD>'
+      ,    '</TR>'
+
+      ,    '<TR>'
+      ,    '<TD>&nbsp;</TD>'
+      ,    '<TD><font color=#ff9090><text id=errorMessage> </text></font></TD>'
+      ,    '</TR>'
+
+      ,    '<TR>'
+      ,    '<TD valign=top>'
+      ,        '<text id=highlight></text>'
+      ,    '</TD>'
+
+      ,    '<TD valign=top>'
+      ,        '<table>'
+
+      ,        '<tr>'
+      ,        '<td width=100%>'
+      ,            '<button id=prevButton style="color:black;background:black;border-style:none;outline-width:0">'
+      ,                '<big><b><big>&larr;</big> PREV</b></big>'
+      ,            '</button>'
+
+      ,            '&nbsp;'
+
+      ,            '<button id=nextButton style="color:black;background:' + accentColor(true) + ';border-style:none;outline-width:0">'
+      ,                '<big><b>NEXT <big>&rarr;</big></b></big>'
+      ,            '</button>'
+      ,        '</td>'
+      ,        '</tr>'
+
+      ,        '<tr>'
+      ,        '<td>'
+      ,            '<textArea id=textArea '
+      ,            'style="background:black;color:white;font:13px courier;outline-width:0;border-style:none;resize:none;overflow:scroll">'
+      ,            '</textArea>'
+      ,        '</td>'
+      ,        '</tr>'
+
+      ,        '</table>'
+      ,    '</TD>'
+      ,    '</TR>'
+
+      ,    '</TABLE>'
+
+      ,'</TD>'
+
+      ,'<TD valign=top>'
+      ,    '<table>'
+
+      ,    '<tr><td valign=top>'
+      ,    document.body.innerHTML
+      ,    '</td></tr>'
+
+      ,    '<tr><td valign=top>'
+      ,       '<pre><font color=' + accentColor(true) + ' face=helvetica><big><text id=narrative>'
+      ,          narrative
+      ,       '</text></font><pre>'
+      ,    '</td></tr>'
+
+      ,    '</table>'
+      ,'</TD>'
+
+      ,'</TR>'
+      ,'</TABLE>'
+      ,'</CENTER>'
+
+   ].join('');
+
+   prevButton.onclick = prevIndex;
+   nextButton.onclick = nextIndex;
+   highlight.style.color = accentColor(true);
+
+   highlight.setHighlight = function(hlight) {
+      while (hlight.length <= errorLineNumber)
+         hlight += ' ';
+      var str = '', i;
+      for (i = 0 ; i < hlight.length ; i++)
+         str += ( i == errorLineNumber ? '<font color=#ff8090>&block;&block;</font>' :
+	          hlight.charCodeAt(i) > 32 ? '&block;&block;' : '  ' ) + '\n';
+      this.innerHTML = '<font size=3><hr size=' + (isChrome() ? 10 : 15) + ' color=black><pre>' + str + '</pre>';
+   }
+
+   highlight.setHighlight(highlightPattern);
+
+   textArea.setCode = function(code) {
+      this.value = code;
+
+      var i = 0, text = this.value.split('\n');                             // Set the correct number of rows and columns.
+      this.rows = text.length;
+      while (i < text.length)
+         this.cols = Math.max(this.cols, text[i++].length);
+   }
+
+   textArea.fss = fss;
+   textArea.setCode(code);
    textArea.onkeyup = callback;                                              // User-provided callback function on keystroke.
 }
 
