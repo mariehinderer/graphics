@@ -32,6 +32,16 @@ Hi, this is my garden.
       ctx.fillStyle = 'pink';
       ctx.fillRect(this.width/2+12, this.height/2+12, this.width/2 +12, this.height/2 +12);
 
+      ctx.fillStyle = 'black';
+      ctx.fillRect(this.width/4 - 20, this.height/4 +49, this.width/4 -60, this.height/4 -60);
+      ctx.fillRect(this.width/4 - 20 + this.width/2, this.height/4 +51, this.width/4 -60, this.height/4 -60);
+
+      ctx.fillRect(this.width/4 - 20, this.height-30, this.width/4 -60, this.height-60);
+
+      ctx.fillRect(this.width/4 - 20 + this.width/2, this.height-30, this.width/4 -60, this.height-60);
+
+
+
       // horizonalt lines
       g.lineWidth = 1;
       g.setLineDash([5, 15]);
@@ -59,75 +69,243 @@ Hi, this is my garden.
       g.stroke();
 
       g.beginPath();
-      g.lineWidth = 10;
-      var x = this.cursor.x;
-      var y = this.cursor.y;
-      var z = this.cursor.z;
-      if (z == 0) {
-         x = this.width / 4;
-         y = this.height / 4;
-      }
-
-      var angle = Math.sin(time);
-      var flapY = 50 * Math.sin(2 *angle);
-      var flapX = 50 * Math.cos(2 *angle);
-      g.moveTo(x-flapX, y-flapY);
-      g.lineTo(x, y);
-      g.lineTo(x+flapX, y-flapY);
-      g.stroke();
-
-      g.beginPath();
-      g.lineWidth = 10;
-      var x = this.cursor.x;
-      var y = this.cursor.y;
-      var z = this.cursor.z;
-      if (z == 0) {
-         x = this.width / 4 + this.width / 4 + this.width / 4;
-         y = this.height / 4;
-      }
-
-      var angle = Math.sin(time);
-      var flapY = 50 * Math.sin(2 *angle);
-      var flapX = 50 * Math.cos(2 *angle);
-      g.moveTo(x-flapX, y-flapY);
-      g.lineTo(x, y);
-      g.lineTo(x+flapX, y-flapY);
-      g.stroke();
-
-      g.beginPath();
-      g.lineWidth = 10;
-      var x = this.cursor.x;
-      var y = this.cursor.y;
-      var z = this.cursor.z;
-      if (z == 0) {
-         x = this.width / 4 + this.width / 4 + this.width / 4;
-         y = this.height / 4 + this.height / 4 + this.height / 4;
-      }
-
-      var angle = Math.sin(time);
-      var flapY = 50 * Math.sin(2 *angle);
-      var flapX = 50 * Math.cos(2 *angle);
-      g.moveTo(x-flapX, y-flapY);
-      g.lineTo(x, y);
-      g.lineTo(x+flapX, y-flapY);
-      g.stroke();
-
-      g.beginPath();
-      g.lineWidth = 10;
+      g.lineWidth = 5;
       var x = this.cursor.x;
       var y = this.cursor.y;
       var z = this.cursor.z;
       if (z == 0) {
          x = this.width / 4 ;
-         y = this.height / 4 + this.height / 4 + this.height / 4;
+         y = this.height / 4 + this.height / 4 -20;
       }
 
-      var angle = Math.sin(time);
-      var flapY = 50 * Math.sin(2 *angle);
-      var flapX = 50 * Math.cos(2 *angle);
-      g.moveTo(x-flapX, y-flapY);
+      var freq = z == 0 ? 6 : 12;
+      var f = .2;
+      var angle = -2 * f * (Math.sin(freq * time) - 2.);
+     
+
+      var flapY = 30 * Math.sin(angle);
+      var flapX = 30 * Math.cos(angle);
+      g.lineTo(x-flapX, y-flapY);
       g.lineTo(x, y);
       g.lineTo(x+flapX, y-flapY);
+
+      z =0;
+
+      if (z == 0) {
+         x = this.width / 4 ;
+         y = this.height / 4 + this.height / 4 -20;
+      }
+      var freq2 = z == 0 ? 6 : 12;
+      var f2 = .2;
+      var angle2 = -2 * f2 * (Math.sin(freq2 * time/2) - 3.);
+     
+
+      var flapY2 = 40 * Math.sin(angle2);
+      var flapX2 = 40 * Math.cos(angle2);
+      g.moveTo(x-flapX2, y-flapY2);
+      g.lineTo(x, y);
+      g.lineTo(x+flapX2, y-flapY2);
+
+      z =0;
+
+      if (z == 0) {
+         x = this.width / 4 ;
+         y = this.height / 4 + this.height / 4 -20;
+      }
+      var freq3 = z == 0 ? 6 : 12;
+      var f3 = .2;
+      var angle3 = -2 * f2 * (Math.sin(freq3 * time/5) - 3.);
+     
+
+      var flapY3 = 50 * Math.sin(angle3);
+      var flapX3 = 50 * Math.cos(angle3);
+      g.moveTo(x-flapX3, y-flapY3);
+      g.lineTo(x, y);
+      g.lineTo(x+flapX3, y-flapY3);
+      g.stroke();
+
+
+
+
+
+      g.stroke();
+
+
+
+      g.beginPath();
+
+      g.lineWidth = 5;
+      var x = this.cursor.x;
+      var y = this.cursor.y;
+      var z = this.cursor.z;
+      if (z == 0) {
+         x = this.width / 4 + this.width / 4 + this.width / 4;
+         y = this.height / 4 + this.height / 4 -20;
+      }
+
+      var freq = z == 0 ? 6 : 12;
+      var f = .2;
+      //int r = Math.random;
+      var angle = -2 * f * (Math.sin(freq * time) - 2.);
+     
+
+      var flapY = 30 * Math.sin(angle);
+      var flapX = 30 * Math.cos(angle);
+      g.lineTo(x-flapX, y-flapY);
+      g.lineTo(x, y);
+      g.lineTo(x+flapX, y-flapY);
+
+      z =0;
+
+      if (z == 0) {
+         x = this.width / 4 + this.width / 4 + this.width / 4;
+         y = this.height / 4 + this.height / 4 -20;
+      }
+      var freq2 = z == 0 ? 6 : 12;
+      var f2 = .2;
+      var angle2 = -2 * f2 * (Math.sin(freq2 * time/2) - 3.);
+     
+
+      var flapY2 = 40 * Math.sin(angle2);
+      var flapX2 = 40 * Math.cos(angle2);
+      g.moveTo(x-flapX2, y-flapY2);
+      g.lineTo(x, y);
+      g.lineTo(x+flapX2, y-flapY2);
+
+      z =0;
+
+      if (z == 0) {
+         x = this.width / 4 + this.width / 4 + this.width / 4;
+         y = this.height / 4 + this.height / 4 -20;
+      }
+      var freq3 = z == 0 ? 6 : 12;
+      var f3 = .2;
+      var angle3 = -2 * f2 * (Math.sin(freq3 * time/5) - 3.);
+     
+
+      var flapY3 = 50 * Math.sin(angle3);
+      var flapX3 = 50 * Math.cos(angle3);
+      g.moveTo(x-flapX3, y-flapY3);
+      g.lineTo(x, y);
+      g.lineTo(x+flapX3, y-flapY3);
+
+
+
+
+      g.stroke();
+
+
+      g.beginPath();
+      g.lineWidth = 5;
+      var x = this.cursor.x;
+      var y = this.cursor.y;
+      var z = this.cursor.z;
+      if (z == 0) {
+         x = this.width / 4 + this.width/2;
+         y = this.height -30;
+      }
+
+      var freq = z == 0 ? 6 : 12;
+      var f = .2;
+      var angle = -2 * f * (Math.sin(freq * time) - 2.);
+     
+
+      var flapY = 30 * Math.sin(angle);
+      var flapX = 30 * Math.cos(angle);
+      g.lineTo(x-flapX, y-flapY);
+      g.lineTo(x, y);
+      g.lineTo(x+flapX, y-flapY);
+
+      z =0;
+
+      if (z == 0) {
+          x = this.width / 4 + this.width/2;
+         y = this.height -30;
+      }
+      var freq2 = z == 0 ? 6 : 12;
+      var f2 = .2;
+      var angle2 = -2 * f2 * (Math.sin(freq2 * time/2) - 3.);
+     
+
+      var flapY2 = 40 * Math.sin(angle2);
+      var flapX2 = 40 * Math.cos(angle2);
+      g.moveTo(x-flapX2, y-flapY2);
+      g.lineTo(x, y);
+      g.lineTo(x+flapX2, y-flapY2);
+
+      z =0;
+
+      if (z == 0) {
+         x = this.width / 4 + this.width/2;
+         y = this.height -30;
+      }
+      var freq3 = z == 0 ? 6 : 12;
+      var f3 = .2;
+      var angle3 = -2 * f2 * (Math.sin(freq3 * time/5) - 3.);
+     
+
+      var flapY3 = 50 * Math.sin(angle3);
+      var flapX3 = 50 * Math.cos(angle3);
+      g.moveTo(x-flapX3, y-flapY3);
+      g.lineTo(x, y);
+      g.lineTo(x+flapX3, y-flapY3);
+      g.stroke();
+
+
+      g.beginPath();
+      g.lineWidth = 5;
+      var x = this.cursor.x;
+      var y = this.cursor.y;
+      var z = this.cursor.z;
+      if (z == 0) {
+         x = this.width / 4;
+         y = this.height -30;
+      }
+
+      var freq = z == 0 ? 6 : 12;
+      var f = .2;
+      var angle = -2 * f * (Math.sin(freq * time) - 2.);
+     
+
+      var flapY = 30 * Math.sin(angle);
+      var flapX = 30 * Math.cos(angle);
+      g.lineTo(x-flapX, y-flapY);
+      g.lineTo(x, y);
+      g.lineTo(x+flapX, y-flapY);
+
+      z =0;
+
+      if (z == 0) {
+          x = this.width / 4;
+         y = this.height -30;
+      }
+      var freq2 = z == 0 ? 6 : 12;
+      var f2 = .2;
+      var angle2 = -2 * f2 * (Math.sin(freq2 * time/2) - 3.);
+     
+
+      var flapY2 = 40 * Math.sin(angle2);
+      var flapX2 = 40 * Math.cos(angle2);
+      g.moveTo(x-flapX2, y-flapY2);
+      g.lineTo(x, y);
+      g.lineTo(x+flapX2, y-flapY2);
+
+      z =0;
+
+      if (z == 0) {
+         x = this.width / 4;
+         y = this.height -30;
+      }
+      var freq3 = z == 0 ? 6 : 12;
+      var f3 = .2;
+      var angle3 = -2 * f2 * (Math.sin(freq3 * time/5) - 3.);
+     
+
+      var flapY3 = 50 * Math.sin(angle3);
+      var flapX3 = 50 * Math.cos(angle3);
+      g.moveTo(x-flapX3, y-flapY3);
+      g.lineTo(x, y);
+      g.lineTo(x+flapX3, y-flapY3);
       g.stroke();
    }
 
