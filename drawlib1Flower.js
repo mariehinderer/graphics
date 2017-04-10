@@ -1,5 +1,6 @@
    var startTime = Date.now() / 1000, time = startTime;
-   function draw2DCanvases(canvases) {
+   function drawCanvases(canvases) {
+      window.canvases = canvases;
       for (var i = 0 ; i < canvases.length ; i++)
          trackCursor(canvases[i]);
       setInterval(function() {

@@ -6,9 +6,15 @@
 var M = {};
 M._stack = [];
 
+
+var sin = Math.sin;
+var cos = Math.cos;
+
+
 //////////////////////////////////////////////////////////////////////////////
 // Your task is to implement the following methods of object M:
 //////////////////////////////////////////////////////////////////////////////
+
 
 M.identity  = function(m)          {           } // Set m values to identity matrix.
 M.restore   = function(m)          {           } // Pop from a stack to set the 16 values of m.
@@ -26,37 +32,76 @@ M.translate = function(m, v)       {           } // Modify m, translating by v[0
 // Notice how I use M.matrixMultiply() to help implement other methods.
 //////////////////////////////////////////////////////////////////////////////
 
-M.identity = function(m) {
-  var tmp = [1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1];
 
-  for(var i=0; i<m.length; i++){
-    m[i] = tmp[i];
+
+M.identity  = function(m){
+  m[0] =1;
+  m[1] =0;
+  m[2] =0;
+  m[3] =0;
+  m[4] =0;
+  m[5] =1;
+  m[6] =0;
+  m[7] =0;
+  m[8] =0;
+  m[9] =0;
+  m[10] =1;
+  m[11] =0;
+  m[12] =0;
+  m[13] =0;
+  m[14] =0;
+  m[15] =1;
+
+} // Set m values to identity matrix.
+
+M.restore   = function(m){
+    var i;
+    var _t = M._stack.pop();
+    for(i=0; i<16; i++){
+      m[i] = _t[i];
+    }
+}
+
+M.rotateX   = function(m, radians) {
+  var t = [
+        1,        0,            0,                0,
+        0,        cos(radians), -sin(radians),    0,    
+        0,        sin(radians), cos(radians),     0,   
+        0,        0,            0,                1];
+  M.matrixMultiply(m,t,m);
+} 
+
+M.rotateY   = function(m, radians) {
+  var t = [
+        cos(radians), 0, sin(radians),    0,
+         0,           1,            0,    0,    
+        -sin(radians),0,  cos(radians),    0,   
+         0,           0,              0,    1]; 
+  M.matrixMultiply(m,t,m);
+} 
+
+M.rotateZ   = function(m, radians) {
+    var t = [cos(radians), -sin(radians),    0,    0,
+             sin(radians),  cos(radians),    0,    0,
+                        0,             0,    1,    0,
+                        0,             0,    0,    1 ]; 
+  M.matrixMultiply(m,t,m);          
+} 
+
+M.save = function(m){
+  var i;
+  var _t = [];
+
+  for(i=0; i<16; i++){
+    _t.push(m[i]);
   }
-}
+  M._stack.push (_t);
+} 
 
-M.rotateX = function (m, radians){
-  var tmp = [1,0,0,0, 0,Math.cos(radians),-Math.sin(radians),0, 0,Math.sin(radians),Math.cos(radians),0, 0,0,0,1];
-  M.matrixMultiply(m,tmp,m);
+M.scale     = function(m, v) {
+   var x,y,z;
+   var t = [];
 
-}
-M.rotateY = function (m, radians){
-  var tmp = [Math.cos(radians),0,Math.sin(radians),0, 0,1,0,0, -Math.sin(radians),0,Math.cos(radians),0, 0,0,0,1];
-  M.matrixMultiply(m,tmp,m);
-}
-M.rotateZ = function (m, radians){
-  var tmp = [Math.cos(radians),-Math.sin(radians),0,0, Math.sin(radians),Math.cos(radians),0,0, 0,0,1,0, 0,0,0,1];
-  M.matrixMultiply(m,tmp,m);
-}
-
-M.save = function(m) {
-  var i, _m = [];
-   for (i = 0 ; i < m.length ; i++)
-      _m.push(m[i]);                 // MAKE A COPY OF MATRIX
-   M._stack.push(_m);                // PUSH IT ONTO THE STACK
-}
-
-M.scale = function(m, v){
-   var x,y,z, tmp=[];
    if (v instanceof Array) {
       x = v[0];
       y = v[1];
@@ -65,16 +110,16 @@ M.scale = function(m, v){
       x = y = z = v;
    }
 
-   tmp = [x,0,0,0, 0,y,0,0, 0,0,z,0, 0,0,0,1];
-   M.matrixMultiply(m,tmp,m);
-
+  t = [
+    x,    0,       0,   0,
+    0,    y,       0,   0,
+    0,       0,    z,   0,
+    0,       0,       0,   1
+  ];
+  M.matrixMultiply(m,t,m);
 }
 
-M.restore = function(m) {
-   var i, _m = M._stack.pop();       // POP THE COPY OFF THE STACK
-   for (i = 0 ; i < m.length ; i++)  // COPY ITS VALUES INTO MATRIX
-      m[i] = _m[i];
-}
+
 
 M.translate = function(m, v) {
    M.matrixMultiply(m, M.translationMatrix(v), m);
@@ -85,7 +130,7 @@ M.translationMatrix = function(v) {
 }
 
 M.matrixMultiply = function(a, b, dst) {
-   var n, tmp = [];
+   var n, tmp = []; 
 
    // PUT THE RESULT OF a x b INTO TEMPORARY MATRIX tmp.
 
@@ -114,3 +159,4 @@ M.transform = function(m, v)  {
              x * m[2] + y * m[6] + z * m[10] + w * m[14],
              x * m[3] + y * m[7] + z * m[11] + w * m[15] ];
 }
+
