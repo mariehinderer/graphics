@@ -1,0 +1,224 @@
+<script src=M.js></script>
+<script src=lib2g.js></script>
+
+<body bgcolor=black text=white>
+<center>
+<canvas id='canvas1' width=600 height=600></canvas>
+</center>
+</body>
+
+<script id='vs_script' type='x-shader/x-vertex'>
+   attribute vec3 aPos, aNor;
+   varying   vec3 vPos, vNor;
+   uniform   mat4 matrix, invMatrix;
+   void main() {
+      vec4 pos = matrix * vec4(aPos, 1.);
+      vec4 nor = vec4(aNor, 0.) * invMatrix;
+
+// dot(nor, pos);
+// dot(nor * invMatrix, matrix * pos);
+// nor . invMatrix . matrix . pos
+// nor . (invMatrix . matrix) . pos
+// nor . pos
+
+      gl_Position = pos;
+      vPos = pos.xyz;
+      vNor = nor.xyz;
+   }
+</script>
+
+<script id='fs_script' type='x-shader/x-fragment'>
+
+varying vec3 vPos, vNor;
+uniform float uTime;
+
+vec3 LDir = normalize(vec3(1.,sin(uTime),.5));
+
+vec3 phong(vec3 N, vec3 E, vec3 A, vec3 D, vec4 S) {
+   vec3 c = A;                                // Ambient color
+   vec3 LDir = normalize(LDir);
+   float d = max(0., dot(N, LDir));           // Diffuse value
+   vec3 R = 2. * dot(N, LDir) * N - LDir;     // Reflection dir
+   float s = pow(max(0., dot(E, R)), S.a);    // Specular value
+   c += d * D + s * S.rgb * .1*S.a;
+   return c;
+}
+
+void main() {
+   vec3 normal = normalize(vNor);
+   vec3 c = normal * .5 + .5;
+
+   vec3 V = vec3(0.,0.,0.);
+   vec3 W = normalize(vec3(vPos.xy, -3.));
+   vec3 E = -W;
+   vec4 mat = vec4(normal,0.);
+
+   c = phong(normal, E,  vec3(.2,.3,2.), vec3(.5,3.,0.), mat);
+
+   gl_FragColor = vec4(sqrt(c), 1.);
+}
+</script>
+   
+<script>
+
+var m = M.identityMatrix();
+
+var vs = vs_script.innerHTML, fs = fs_script.innerHTML;
+
+addTextEditor(fs, function() { canvas1.setShaders(vs, this.value); });
+
+var obj1, obj2, obj3, obj4, obj5, obj6;
+
+gl_start(canvas1, vs, fs,
+   function(time) {
+      M.identity(m);
+      M.rotateY(m, time);
+
+      M.save(m);
+         M.scale(m,0.2);
+         M.translate(m, [0.,0.,-.4]);
+         M.rotateX(m,3.4);
+         //M.rotateY(m,-.9);
+         obj1.setMatrix(m);
+      M.restore(m);
+
+
+      M.save(m);
+         M.translate(m, [0,0,.5]);
+         obj3.setMatrix(m);
+      M.restore(m);
+
+      M.save(m);
+         M.translate(m, [.3,0,.2]);
+         M.rotateY(m, 1.5);
+         obj4.setMatrix(m);
+      M.restore(m);
+
+      M.save(m);
+         M.translate(m, [0,-0.29,0.2]);
+         //M.rotateY(m, .5);
+        M.rotateX(m,1.6);
+         obj5.setMatrix(m);
+      M.restore(m);
+
+      M.save(m);
+         M.translate(m, [-0.3,0,0.2]);
+         M.rotateY(m, 1.5);
+         obj6.setMatrix(m);
+      M.restore(m);
+
+      M.save(m);
+         M.translate(m, [0,0,-.1]);
+         obj7.setMatrix(m);
+      M.restore(m);
+
+
+      M.save(m);
+         M.rotateX(m, .6);
+         M.rotateY(m, .2);
+         M.translate(m, [0.,0.4,0.45]);
+
+         obj8.setMatrix(m);
+      M.restore(m);
+
+
+      
+   }
+);
+   var scene = new Scene();
+
+   obj1 = new SceneObject();
+   obj1.setVertices([
+      -.3,-.3, 0,  .3,1,1,
+       .3,-.3, 1,  .5,.3,1,
+       .3, .3, 0,  .2,.2,1,
+
+       .3, .3, 0,  .2,.2,1,
+      -.3, .3, 1,  .4,.4,1,
+      -.3,-.3, 0,  0,0,1,
+   ]);
+   scene.addObject(obj1);
+
+   
+
+   obj3 = new SceneObject();
+   obj3.setVertices([
+     -.3,-.3, 0,  0,0,1,
+      .3,-.3, 0,  0,0,1,
+      .3, .3, 0,  0,0,1,
+
+      .3, .3, 0,  0,0,1,
+     -.3, .3, 0,  0,0,1,
+     -.3,-.3, 0,  0,0,1,
+   ]);
+   scene.addObject(obj3);
+
+   obj4 = new SceneObject();
+   obj4.setVertices([
+     -.3,-.3, 0,  0,0,1,
+      .3,-.3, 0,  0,0,1,
+      .3, .3, 0,  0,0,1,
+
+      .3, .3, 0,  0,0,1,
+     -.3, .3, 0,  0,0,1,
+     -.3,-.3, 0,  0,0,1,
+   ]);
+   scene.addObject(obj4);
+
+   obj5 = new SceneObject();
+   obj5.setVertices([
+     -.3,-.3, 0,  0,0,1,
+      .3,-.3, 0,  0,0,1,
+      .3, .3, 0,  0,0,1,
+
+      .3, .3, 0,  0,0,1,
+     -.3, .3, 0,  0,0,1,
+     -.3,-.3, 0,  0,0,1,
+   ]);
+   scene.addObject(obj5);
+
+   obj6 = new SceneObject();
+   obj6.setVertices([
+     -.3,-.3, 0,  0,0,1,
+      .3,-.3, 0,  0,0,1,
+      .3, .3, 0,  0,0,1,
+
+      .3, .3, 0,  0,0,1,
+     -.3, .3, 0,  0,0,1,
+     -.3,-.3, 0,  0,0,1,
+   ]);
+   scene.addObject(obj6);
+
+   obj7 = new SceneObject();
+   obj7.setVertices([
+     -.3,-.3, 0,  0,0,1,
+      .3,-.3, 0,  0,0,1,
+      .3, .3, 0,  0,0,1,
+
+      .3, .3, 0,  0,0,1,
+     -.3, .3, 0,  0,0,1,
+     -.3,-.3, 0,  0,0,1,
+   ]);
+   scene.addObject(obj7);
+
+   obj8 = new SceneObject();
+   obj8.setVertices([
+     -.2,-.2,-.2,  0,0,1,
+      .2,-.2, .2,  0,0,1,
+      .2, .2, .2,  0,0,1,
+
+      .2, .2, .2,  0,0,1,
+     -.2, .2,-.2,  0,0,1,
+     -.2,-.2,-.2,  0,0,1,
+   ]);
+   scene.addObject(obj8);
+
+
+
+   
+
+   canvas1.scene = scene;
+
+
+</script>
+
