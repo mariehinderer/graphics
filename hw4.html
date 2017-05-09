@@ -60,7 +60,7 @@ vec3 backgroundColor(vec3 dir) {
 
    float fn = noise(v3);
    
-   return mix(vec3(fn*.8,.51,.01), vec3(fn*.01,.01,.1), 1. - t * fn*uTime*.5);
+   return mix(vec3(fn*.8,.51,.01), vec3(fn*.01,.01,.1), 1. - t );
 }
 
 vec3 spehereNoise(vec3 c){
@@ -141,7 +141,7 @@ function gl_uniform3f(gl, name, a,b,c)   { gl.uniform3f(gl.getUniformLocation(gl
 function gl_uniform4f(gl, name, a,b,c,d) { gl.uniform4f(gl.getUniformLocation(gl.program, name), a,b,c,d); }
 
 var NLIGHTS = 10;
-var NSPHERES = 3;
+var NSPHERES = 2;
 
 insertFragmentShaderCode(noise_shader);
 insertFragmentShaderCode('#define NLIGHTS ' + NLIGHTS + '\n');
@@ -184,7 +184,7 @@ gl_start(canvas1, vs_script.innerHTML,
          var d = [];
 	 d[0] = Math.random()-.5;
 	 d[1] = Math.random()-.5;
-	 d[2] = Math.random()-.5;
+	 //d[2] = Math.random()-.5;
 	 let t = .5 - .5 * d[1] / Math.sqrt(d[0] * d[0] + d[1] * d[1] + d[2] * d[2]);
 	 t = 1 - t * t;
          gl.uniform3f(uLights[i].direction, d[0], d[1], d[2]);
